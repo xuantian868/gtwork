@@ -1,0 +1,416 @@
+<c:choose>
+				   <c:when test="${empty yArchivestore.id}">  
+				            <sys:treeselect id="templateId" notAllowSelectRoot="true" name="templateId" value="${yArchivestore.templateId}" labelName="templatename" labelValue="${yArchivestore.templateName}"
+						title="档案模板" url="/busmanage/yTemplate/treeData?pid=0" cssClass="required"/>
+				
+				   </c:when>
+				   <c:otherwise>
+				  		<input name="templateId" value="${yArchivestore.templateId}" type="hidden"/>
+					   <input name="templateName" value="${yArchivestore.templateName}" class="input-xlarge uneditable-input" readonly/>
+				   </c:otherwise>
+				</c:choose>
+				
+<c:choose> 
+			  <c:when test="${'0'==worklist.state}">   
+			  	<input id="approve_agree" class="btn btn-primary" type="button" value="同意" onclick="doApprove(1)"/>
+				<input id="approve_disagree" class="btn btn-primary" type="button"  value="拒绝" onclick="doApprove(2)"/>
+				<input id="approve_dispatch" class="btn btn-primary" type="button"  value="转审批" onclick="doApprove(3)"/>
+			  </c:when>
+			  <c:otherwise>   
+			 	<input id="approve_dispatch" class="btn btn-primary" type="button"  value="流程查看" onclick="showhistory()"/>
+			  </c:otherwise> 
+			</c:choose> 
+			
+<select name="processDefinitionKey" class="input-large">
+					<option value="">请选择</option>
+					<c:forEach items="${fns:getStaticDictList('workflow_type')}" var="item">
+						<option value="${item.value}">${item.label}</option>
+					</c:forEach>
+				</select>
+				
+map2.put("level", "0");
+
+treeselect 不允许选择 根节点，需要将显示的列表数据的根节点增加属性 level=0
+并且在增加 notAllowSelectRoot="true"
+<sys:treeselect id="templateId" notAllowSelectRoot="true" name="templateId" value="${yArchivestore.templateId}" labelName="templatename" labelValue="${yArchivestore.templateName}"
+						title="档案模板" url="/busmanage/yTemplate/treeData?pid=0" cssClass="required"/>
+						
+						
+
+						
+ colModel: [
+					{ label: '档案库名称', name: 'name', width: 50 },
+					{ label: '模板名称', name: 'templateName', width: 50 },
+					{ label: '物理表名称', name: 'tblname', width: 50 },
+		            { label: '操作', name: 'oo', width: 150, formatter : function(value, options, row) {
+		            	if (hasEditPermission) {
+		            		var optStr = '<a href="javascript:void(0)" onclick="openArchiveStoreWin(\''+row.id+'\')">修改</a>';
+							
+							
+		            		if(row.datype!='卷内文件'){
+								optStr +='&nbsp;|&nbsp;<a href="javascript:void(0)" onclick="del(\''+row.id+'\')" >删除</a>';
+								optStr +='&nbsp;|&nbsp;<a href="javascript:void(0)" onclick="setStroeUnit(\''+row.id+'\')" >设置全宗</a>';
+							}
+							
+							return optStr;
+		            	} else {
+		            		return "";
+		            	}
+		            } }
+		        ],
+				
+				
+alertx(result.msg);
+top.$.jBox.info(result.msg, '提示');
+				
+				window.location.href= window.location.href;
+
+<select id="getMaxXH" resultType="string">
+		SELECT 
+			MAX(IXH)
+		FROM y_templatefield a  where template_id=#{templateId}
+	</select>
+	
+
+	子页面刷新父iframe 
+	function reloadStroeList(){
+			parent.treeContents.src = parent.treeContents.src+"?classId=${archiveClassId}";
+		}
+	
+	
+	
+		<c:forEach items="${fieldList}" var="item">
+								<option value="${item.id}" <c:if test="${item.id==yArchivenoRule.typeval}"> selected=selected</c:if> >${item.labelname}</option>
+							</c:forEach>
+							
+$.jBox.close(true)
+
+
+//后台Java 返回 return null ，页面js要判断
+if(result==null){
+		        		
+		return;
+	}
+	
+jqgrid将多选改为单选，单样式换上checkbox 。  也可以自己在列上写radio
+				multiselect: true,  
+				multiboxonly:true,  
+				beforeSelectRow: beforeSelectRow,//js方法 
+	
+
+		function beforeSelectRow()  {  
+					$("#rulegrid").jqGrid('resetSelection');  
+					return(true);  
+				} 
+		隐藏全选按钮：$("#cb_rulegrid").hide();//隐藏全选checkbox，此全选checkbox是jqguid自动生成的。全选checkbox的id ，应该是固定值"cb_"+grid的id。
+		
+		
+tree全部展开
+$.getJSON("${ctx}/sys/sRule/treeData",function(data){
+				var treeObj = $.fn.zTree.init($("#ztree"), setting, data).expandAll(true);
+			});
+			
+只展示第一级别
+$.getJSON("${ctx}/sys/sRule/treeData",function(data){
+				var treeObj = $.fn.zTree.init($("#ztree"), setting, data);//expandAll(true);
+				var sNodes = treeObj.getNodeByTId("tree_1");
+				treeObj.expandNode(sNodes,true,false,true);
+			});
+			
+//******************************动态向table中添加行，删除行
+$.ajax({
+        	type : "post",
+	        url : "${ctx}/archivessearch/crossarcsearch/chaxun",
+	        dataType : "json",
+	        data:{
+	        	storeId:storeids,
+	        	qz:'',
+	        	searchKey:$("#svalue").val()
+	        },
+	        timeout : 180000,
+	        async:false,
+	        beforeSubmit : function() {
+	        	//alert('bbb')
+	        },
+	        success : function(result, status) {
+	        	//console.log(result)
+	        	var trs = "";
+	        	$("#datagrid tbody tr").eq(0).nextAll().remove();
+	        	//cit.find("tr:not(:first)").remove();
+	        	$.each(result, function(index, value, array) {
+	        		trs +="<tr>"
+	        		trs +=" <td class='tdshow'>"+value['xh']+"</td>";
+	        		trs +=" <td class='tdshow'>"+value['dakmc']+"</td>";
+	        		trs +=" <td class='tdshow'>"+value['unitname']+"</td>";
+	        		trs +=" <td class='tdshow'>"+value['tms']+"</td>";
+	        		trs +=" <td class='tdshow' style='border-right: #000000 solid 1px;'><a href='${ctx}/archivessearch/crossarcsearch/chaxuntm?dakbm="+value['dakbm']+"&unitcode="+value['unitcode']+"&storeId="+value['dakid']+"'>查看</a>";
+	        		trs +="<a href='javascript:void(0)' onclick='openStore(\""+value['dakmc']+"\",\""+value['dakid']+"\")'>方式2</a></td>";
+	        		trs +="</tr>"
+	        	});
+	        	if(trs==""){
+	        		trs +="<tr><td colspan='5' class='tdshow' style='border-right: #000000 solid 1px;'>没有查询到符合条件的数据!</td>"
+	        	}
+	        	$("#datagrid tr:eq(0)").after(trs); // 在table的第2行后面添加一行
+	        },
+	        error : function() {
+	        	alertx('出现错误，稍后再试！');
+	        }
+        });
+			
+			
+	function openStore(storeName,storeId){
+		url="${ctx}/archivessearch/arcsearch/archivemuluSearch?state=1&name=33&storeName="+storeName+"&storeId="+storeId;
+		var aa="<a id='zl_"+storeId+"' style='display:none;' target='mainFrame' onclick='parent.addTab($(this),true)' href='"+url+"'>跨库检索-"+storeName+"</a>";
+		$("body").append(aa);//将表单放置在web中
+		$("#zl_"+storeId).click();
+	}
+			
+			
+			
+//固定jbox
+$.jBox.open("get:${ctx}/busmanage/yTemplatefield/layout?templateId=${YTemplatefield.templateId}", "设置模板布局", 700, 460,{persistent:true,id:'templatefieldLayout',zIndex:2000,closed:function(){$("#grid_yTemplatefield").trigger("reloadGrid");} ,buttons: {  },opacity: 0.1});
+,sortable:false 
+-----时间控件  显示清除按钮 isShowClear:false
+<input name="yearend" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
+					value="${archiveaccept.yearend}"
+					onclick="WdatePicker({dateFmt:'yyyy',isShowClear:true});"/>
+					
+$.jBox.tip("正在保存，请稍后...", 'loading',{opacity:0.5,persistent:true});
+//关闭遮罩
+ $.jBox.closeTip();
+ 
+ 	$.jBox.tip("正在保存，请稍后...", 'loading',{opacity:0.5,persistent:true});
+				        },
+				        success : function(result, status) {
+				        	$.jBox.closeTip();
+
+sqlserver 将时间转换为字符串格式 y-m-s
+CONVERT(varchar(10),a.create_date,120) AS "createDateStr",
+
+时间格式化：
+formatter:'date'的formatoptions配置从formatoptions:{newformat: 'Y-m-d H:i:s'}改成formatoptions:{srcformat: 'Y-m-d H:i:s', newformat: 'Y-m-d H:i:s'}
+,formatter:'date',formatoptions: {newformat:'Y-m-d'}
+<c:if test="${'0'==borrowapply.applytype}">
+			 <tr>
+				<td align="right">利用方式：</td>
+				<td>
+					<input type="checkbox" name="iprint" value="1"  <c:if test="${'1'==borrowapply.iprint}">checked</c:if>>打印
+					<input type="checkbox" name="idown" value="1" <c:if test="${'1'==borrowapply.idown}">checked</c:if>>下载
+				</td>
+			</tr>
+			 </c:if>
+			 
+radio 赋值
+$("input[name='recScopeType'][value='"+result.auth.recScopeType+"']").attr("checked",true);
+$("input[name='recsearch'][value='${yQzRollTemplatefield.recsearch}']").attr("checked",true);
+			$("input[name='fieldindex'][value='${yQzRollTemplatefield.fieldindex}']").attr("checked",true);
+
+checkbox赋值
+if(result.auth.recOps){
+		        		var recopsAry = result.auth.recOps.split(",");
+			        	for(var j=0;j<recopsAry.length;j++){
+			        		$("input[name='chk_rec'][value='"+recopsAry[j]+"']").attr('checked','true');
+			        	}
+		        	}
+					
+ $("[name='recScopeType']").click(function(){
+				  
+				   if($(this).val()==1){
+						$("#btn_rec").attr('disabled',true);
+				   }else{
+						$("#btn_rec").attr('disabled',false);
+				   }
+				});
+				
+
+//***************************列可以format  比如下面的角色名称列
+$("#grid").jqGrid({
+	        url: '${ctx}/sys/role/load',
+	        mtype: "POST",
+	        datatype: "json",
+			jsonReader: {
+				id: "id",
+				root: "list",
+				page: "page",
+				total: "total",
+				records: "records"//总条数
+			},
+	        colModel: [
+	            { label: '主键', name: 'id', key: true, hidden: true},
+	            { label: '角色名称', name: 'name', width: 200,sortable:false ,formatter: function(value, options, row) {
+	            	return "<a href=\"${ctx}/sys/role/form?id="+row.id+"\">"+value+"</a>";
+	            }  },
+	            { label: '是否可用', name: 'useable', width: 50 ,sortable:false  ,formatter:"select",editoptions:{value:"${fns:getStaticDictListJsonTag('yes_no')}"}},
+	            { label: '是否默认', name: 'defaultRole', width: 50 ,sortable:false  ,formatter:"select",editoptions:{value:"${fns:getStaticDictListJsonTag('yes_no')}"}},
+	           /*  { label: '英文名称', name: 'enname', width: 100,sortable:false ,formatter: function(value, options, row) {
+	            	return "<a href=\"${ctx}/sys/role/form?id="+row.id+"\">"+value+"</a>";
+	            }  },
+	            { label: '归属机构', name: 'office.name', width: 150,sortable:false },
+	            { label:'数据范围', name: 'dataScope', width: 150,sortable:false  }, */
+	            { label: '操作', name: 'delFlag', width: 150, formatter : function(value, options, row) {
+	            	if (hasEditPermission) {
+    					return  '<a href="javascript:void(0)" onclick="fenpei(\''+row.id+'\',\''+row.name+'\')">分配</a>&nbsp;|&nbsp;'+
+    							'<a href="javascript:void(0)" onclick="add(\''+row.id+'\')">修改</a>&nbsp;|&nbsp;'+
+    							'<a href="javascript:void(0)" onclick="auth(\''+row.id+'\')">授权</a>&nbsp;|&nbsp;'+
+								'<a href="${ctx}/sys/role/delete?id='+row.id+'" onclick="return confirmx(\'确认要删除该角色吗？\', this.href)">删除</a>';
+	            	} else {
+	            		return "";
+	            	}
+	            } }
+	        ],
+			viewrecords: true,
+			autowidth: true,
+			autoheight: true,
+	       // width: 780,
+	      	height: $(window).height() - 100
+	        //rowNum: 20 ,
+	        //pager: "#pager"
+	      //  postData : getParams()
+	    });
+******************************************增加验证规则
+	$("#inputForm2").validate({
+				rules:{ //配置验证规则
+					days:{
+					  required:true, //必填
+					  digits:true ,//数字
+					  range:[1,30]
+					  }},
+				submitHandler: function(form){
+					//loading('正在提交，请稍等...');
+					$("#inputForm2").ajaxSubmit({
+			        	type : "post",
+				        url : "${ctx}/archivesuse/borrowapply/${save}",
+				        dataType : "json",
+				        timeout : 180000,
+				        success : function(result, status) {
+				        	
+				        	alertx(result.msg);
+				        },
+				        error : function() {
+				        	$.jBox.info('出现错误，稍后再试！', '提示');
+				        }
+			        });
+				},
+				errorContainer: "#messageBox",
+				errorPlacement: function(error, element) {
+					$("#messageBox").text("输入有误，请先更正。");
+					if (element.is(":checkbox")||element.is(":radio")||element.parent().is(".input-append")){
+						error.appendTo(element.parent().parent());
+					} else {
+						error.insertAfter(element);
+					}
+				}
+			});
+			
+			
+*****************************************批量新增
+<insert id="insertList" parameterType="java.util.List">
+		INSERT INTO y_templatelayout_field(
+			id,
+			layout_id,
+			field_id,
+			ixh,
+			del_flag,isSys
+		) VALUES 
+		<foreach collection="list" item="field" index="index" separator="," >
+		(
+			#{field.id},
+			#{field.layoutId},
+			#{field.fieldId},
+			#{field.ixh},
+			#{field.delFlag},
+			#{field.isSys}
+		)
+		</foreach>
+	</insert>
+	
+	
+-----------------------------------------
+	/**
+	 * 批量从角色中移除用户
+	 *  20170318 zhangg
+	 *  
+	 *  @param roleId 角色ID
+	 *  @param userIds 用户ID LIST
+	 * */
+	int batchOutUserRole(@Param("roleId")String roleId,@Param("userIds")List<String> userIds);
+	
+	
+	<!-- 批量删除角色下的用户 -->
+	<delete id="batchOutUserRole">
+		DELETE FROM sys_user_role WHERE role_id=#{roleId} and user_id in 
+		 <foreach item="id" collection="userIds" open="(" close=")" separator=",">
+             #{id}
+        </foreach>
+	</delete>
+	
+	
+	
+---------------------
+ $("[type='checkbox']").each(function(){
+			 console.log($(this))
+			if($(this).attr("checked")){
+				
+				$(this).attr("value","Y1"); 
+			}else{
+				//$(this).val("N");
+				$(this).attr("value","N1"); 
+			}
+		  
+		    });
+		    
+		alert($("input[name='readonly']").attr('value'));
+		
+		
+------
+,sortable:false 
+
+
+
+/**
+	 * 
+	 * @param total 非利用登记待办总量
+	 * @param pageSize 每页显示数量
+	 * @param pageNo 显示第几页数据
+	 * @param worklistCount  利用登记的待办总量
+	 * 
+	 * @return int【】 利用登记的取值范围 
+	 * */
+	private int[] getPageIndex(int total,int pageSize,int pageNo,int worklistCount){
+		logger.info("getPageIndex:"+total+","+pageSize+","+pageNo+","+worklistCount);
+		
+		//非利用登记的显示页数
+		int apage = total%pageSize==0?total/pageSize:total/pageSize+1;
+		if(total==0){
+			apage = 1;
+		}
+		
+		int startIndex = 0;
+		int endIndex = pageSize;
+		if(pageNo==apage){//当前页数等于非利用登记的待办数量
+			startIndex =0;
+			
+			endIndex = pageSize-(total%pageSize);//需要补全的利用登记数量
+			if(endIndex>worklistCount){
+				endIndex = worklistCount;
+			}
+		}else if(pageNo>apage){
+
+			int firstEnd = (apage*pageSize)-total;//第一次补全的利用登记数
+			startIndex = firstEnd+(pageNo-apage-1)*pageSize;
+
+
+			endIndex = startIndex+pageSize;
+			if(endIndex>worklistCount){
+				endIndex = worklistCount-1;
+			}
+		}
+		
+		logger.info("getPageIndex:"+startIndex+","+endIndex);
+		return new int[]{startIndex,endIndex};
+	}
+	
+	
+
+ 
+					
