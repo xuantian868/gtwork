@@ -1,12 +1,12 @@
 <c:choose>
 				   <c:when test="${empty yArchivestore.id}">  
-				            <sys:treeselect id="templateId" notAllowSelectRoot="true" name="templateId" value="${yArchivestore.templateId}" labelName="templatename" labelValue="${yArchivestore.templateName}"
-						title="档案模板" url="/busmanage/yTemplate/treeData?pid=0" cssClass="required"/>
+				            <sys:treeselect id="templId" notAllowSelectRoot="true" name="templId" value="${yArchivestore.templId}" labelName="templname" labelValue="${yArchivestore.templName}"
+						title="模板" url="/busmanage/yT/treeData?pid=0" cssClass="required"/>
 				
 				   </c:when>
 				   <c:otherwise>
-				  		<input name="templateId" value="${yArchivestore.templateId}" type="hidden"/>
-					   <input name="templateName" value="${yArchivestore.templateName}" class="input-xlarge uneditable-input" readonly/>
+				  		<input name="templId" value="${yArchivestore.templId}" type="hidden"/>
+					   <input name="templName" value="${yArchivestore.templName}" class="input-xlarge uneditable-input" readonly/>
 				   </c:otherwise>
 				</c:choose>
 				
@@ -32,24 +32,22 @@ map2.put("level", "0");
 
 treeselect 不允许选择 根节点，需要将显示的列表数据的根节点增加属性 level=0
 并且在增加 notAllowSelectRoot="true"
-<sys:treeselect id="templateId" notAllowSelectRoot="true" name="templateId" value="${yArchivestore.templateId}" labelName="templatename" labelValue="${yArchivestore.templateName}"
-						title="档案模板" url="/busmanage/yTemplate/treeData?pid=0" cssClass="required"/>
+<sys:treeselect id="templId" notAllowSelectRoot="true" name="templId" value="${yArchivestore.templId}" labelName="templname" labelValue="${yArchivestore.templName}"
+						title="模板" url="/busmanage/yT/treeData?pid=0" cssClass="required"/>
 						
 						
 
 						
  colModel: [
-					{ label: '档案库名称', name: 'name', width: 50 },
-					{ label: '模板名称', name: 'templateName', width: 50 },
-					{ label: '物理表名称', name: 'tblname', width: 50 },
+					{ label: '库名称', name: 'name', width: 50 },
+					{ label: '名称', name: 'templName', width: 50 },
 		            { label: '操作', name: 'oo', width: 150, formatter : function(value, options, row) {
 		            	if (hasEditPermission) {
 		            		var optStr = '<a href="javascript:void(0)" onclick="openArchiveStoreWin(\''+row.id+'\')">修改</a>';
 							
 							
-		            		if(row.datype!='卷内文件'){
+		            		if(row.datype!='文件'){
 								optStr +='&nbsp;|&nbsp;<a href="javascript:void(0)" onclick="del(\''+row.id+'\')" >删除</a>';
-								optStr +='&nbsp;|&nbsp;<a href="javascript:void(0)" onclick="setStroeUnit(\''+row.id+'\')" >设置全宗</a>';
 							}
 							
 							return optStr;
@@ -68,7 +66,7 @@ top.$.jBox.info(result.msg, '提示');
 <select id="getMaxXH" resultType="string">
 		SELECT 
 			MAX(IXH)
-		FROM y_templatefield a  where template_id=#{templateId}
+		FROM y_templfield a  where templ_id=#{templId}
 	</select>
 	
 
@@ -168,7 +166,7 @@ $.ajax({
 			
 			
 //固定jbox
-$.jBox.open("get:${ctx}/busmanage/yTemplatefield/layout?templateId=${YTemplatefield.templateId}", "设置模板布局", 700, 460,{persistent:true,id:'templatefieldLayout',zIndex:2000,closed:function(){$("#grid_yTemplatefield").trigger("reloadGrid");} ,buttons: {  },opacity: 0.1});
+$.jBox.open("get:${ctx}/busmanage/yTfield/layout?temId=${field.templId}", "设置布局", 700, 460,{persistent:true,id:'templfieldLayout',zIndex:2000,closed:function(){$("#grid_yTfield").trigger("reloadGrid");} ,buttons: {  },opacity: 0.1});
 ,sortable:false 
 -----时间控件  显示清除按钮 isShowClear:false
 <input name="yearend" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
@@ -202,8 +200,8 @@ formatter:'date'的formatoptions配置从formatoptions:{newformat: 'Y-m-d H:i:s'
 			 
 radio 赋值
 $("input[name='recScopeType'][value='"+result.auth.recScopeType+"']").attr("checked",true);
-$("input[name='recsearch'][value='${yQzRollTemplatefield.recsearch}']").attr("checked",true);
-			$("input[name='fieldindex'][value='${yQzRollTemplatefield.fieldindex}']").attr("checked",true);
+$("input[name='recsearch'][value='${yQzRolltemplfield.recsearch}']").attr("checked",true);
+			$("input[name='fieldindex'][value='${yQzRolltemplfield.fieldindex}']").attr("checked",true);
 
 checkbox赋值
 if(result.auth.recOps){
@@ -305,7 +303,7 @@ $("#grid").jqGrid({
 			
 *****************************************批量新增
 <insert id="insertList" parameterType="java.util.List">
-		INSERT INTO y_templatelayout_field(
+		INSERT INTO y_templlayout_field(
 			id,
 			layout_id,
 			field_id,
