@@ -61,34 +61,7 @@ treeselect 不允许选择 根节点，需要将显示的列表数据的根节�
 			var jbox_width = $(window).width()-20;
 			if($(window).height()<600){jbox_height = $(window).height()-15;}
 			
- $(window).resize(function(){
-				 grid_file.jqGrid('setGridWidth',$(window).width()-20);
-				 grid_file.jqGrid('setGridHeight',$(window).height()-15);
- 			}).resize();
-*****************jquid 选中数据*****
-//获取选择的条目信息，
-			var ids=$("#grid_mulu").jqGrid('getGridParam','selarrrow');
-			if(ids==null || ids=='' || ids==undefined){
-				$.jBox.info('请选择需要导出的档案', '提示');
-				return;
-			}
-			ids.join(",")			
-			
-**************************修改指定行的颜色************
- gridComplete:changeColor
- 
- function changeColor(){
-			 var ids = $("#grid_printdetail").getDataIDs();
-            for(var i=0;i<ids.length;i++){
-                var rowData = $("#grid_printdetail").getRowData(ids[i]);
-                if(rowData.approvestate=='1'){//0 未读 1 已读
-                    $('#'+ids[i]).find("td").addClass("Unread");
-                }
-            }
-        }			
-			
 *****************给序号添加表头****************
-
 rownumbers: true //可自动在表格前面添加序号
 setLabel（）方法可为其添加表头信息
 
@@ -211,7 +184,7 @@ $.ajax({
 			
 //固定jbox
 $.jBox.open("get:${ctx}/busmanage/yTfield/layout?temId=${field.templId}", "设置布局", 700, 460,{persistent:true,id:'templfieldLayout',zIndex:2000,closed:function(){$("#grid_yTfield").trigger("reloadGrid");} ,buttons: {  },opacity: 0.1});
-	
+,sortable:false 
 -----时间控件  显示清除按钮 isShowClear:false
 <input name="yearend" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
 					value="${archiveaccept.yearend}"
